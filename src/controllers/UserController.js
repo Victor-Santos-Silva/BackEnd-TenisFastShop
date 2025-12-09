@@ -1,21 +1,26 @@
-const UserService = require("../services/UserService");
+const userService = require("../services/UserService");
 
-module.exports = {
-  async findAll(req, res, next) {
+const UserController = {
+  create: async (req, res) => {
     try {
-      const users = await UserService.getAllUsers();
-      res.json(users);
-    } catch (err) {
-      next(err);
+      const usuario = await userService.create(req.body);
+      return res.status(201).json({
+        status: "success 201",
+        msg: "Usuário criado com sucesso",
+        usuario,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: "error 500",
+        msg: "Erro ao criar usuário: " + error.message,
+      });
     }
   },
 
-  async create(req, res, next) {
-    try {
-      const user = await UserService.createUser(req.body);
-      res.status(201).json(user);
-    } catch (err) {
-      next(err);
-    }
+  findAll: (req, res) => {
+    // Lógica para obter um usuário
+    res.status(200).send("Detalhes do usuário");
   },
 };
+
+module.exports = UserController;
