@@ -1,3 +1,4 @@
+const { get } = require("../routes/user.routes");
 const userService = require("../services/UserService");
 
 const UserController = {
@@ -17,9 +18,38 @@ const UserController = {
     }
   },
 
-  findAll: (req, res) => {
-    // Lógica para obter um usuário
-    res.status(200).send("Detalhes do usuário");
+  getAll: async (req, res) => {
+    try {
+      const usuarios = await userService.getAll();
+
+      return res.status(200).json({
+        status: "success 200",
+        msg: "Lista de usuários",
+        usuarios,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: "error 500",
+        msg: "Erro ao buscar usuários: " + error.message,
+      });
+    }
+  },
+
+  getById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const usuario = await userService.getById(id);
+      return res.status(200).json({
+        status: "success 200",
+        msg: "Usuário encontrado",
+        usuario,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: "error 500",
+        msg: "Erro ao buscar usuário: " + error.message,
+      });
+    }
   },
 };
 

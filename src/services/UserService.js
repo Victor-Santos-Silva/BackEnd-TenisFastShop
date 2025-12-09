@@ -47,6 +47,26 @@ const UserService = {
       throw new Error(error.message);
     }
   },
+
+  getAll: async () => {
+    try {
+      return await User.findAll();
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getById: async (id) => {
+    try {
+      const usuario = await User.findByPk(id);
+      if (!usuario) {
+        throw new Error("Usuário não encontrado.");
+      }
+      return usuario;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = UserService;
