@@ -2,6 +2,23 @@ const { get } = require("../routes/user.routes");
 const userService = require("../services/UserService");
 
 const UserController = {
+  login: async (req, res) => {
+    try {
+      const login = await userService.login(req.body);
+
+      return res.status(201).json({
+        status: "Sueccess 201",
+        msg: "Login realizado com sucesso.",
+        login,
+      });
+    } catch (error) {
+      return res.status(401).json({
+        status: "error 401",
+        msg: error.message,
+      });
+    }
+  },
+
   create: async (req, res) => {
     try {
       const usuario = await userService.create(req.body);

@@ -1,13 +1,50 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const UserService = {
+  login: async (data) => {
+    try {
+      const { email, password } = data;
+
+      const usuario = await User.findOne({ where: { email } });
+
+      if (!email || !password) {
+        throw new Error("Preencha todos os campos!");
+      }
+
+      if (!usuario) {
+        throw new Error("Email ou senha incorretos");
+      }
+
+      const isValida = await bcrypt.compare(password, usuario.password);
+      if (!isValida) {
+        throw new Error("Email ou senha incorretos");
+      }
+
+      const token = jwt.sign(
+        { id: usuario.id, email: usuario.email, nome: usuario.name },
+        process.env.SECRET,
+        { expiresIn: "1h" }
+      );
+
+      return {
+        msg: "Login realizado",
+        token,
+        usuario: usuario.name,
+        id: usuario.id,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
   create: async (userData) => {
     try {
       const { name, email, password } = userData;
 
       if (!name || !email || !password) {
-        throw new Error("Nome, email e senha são obrigatórios.");
+        throw new Error("Preencha todos os campos!");
       }
 
       /* Nome */
